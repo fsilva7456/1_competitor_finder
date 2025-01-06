@@ -21,6 +21,20 @@ supabase: Client = create_client(
     os.getenv('SUPABASE_KEY')
 )
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting up application...")
+    logger.info("Checking environment variables...")
+    if not all([os.getenv('OPENAI_API_KEY'), os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY')]):
+        logger.error("Missing required environment variables!")
+    else:
+        logger.info("All required environment variables are set")
+
 class BrandRequest(BaseModel):
     brand_name: str
 
